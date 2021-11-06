@@ -5,14 +5,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import FileBase from 'react-file-base64';
 import useStyles from './style';
 import { createPost, updatePost } from '../../action/post.action';
-
+import { toast } from 'react-toastify';
+import {useHistory} from 'react-router-dom';
 
 export default function Form({ updateId, setupdateId }) {
     const classes = useStyles();
+    
     const post = useSelector(state => updateId ? state.posts.posts.find((p) => p._id === updateId) : null);
+    const history = useHistory();
+    
+    const { authdata } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
 
     const [postData, setPostData] = useState({
-        creator: '',
         title: '',
         message: '',
         tags: '',
@@ -24,16 +29,16 @@ export default function Form({ updateId, setupdateId }) {
         if (post) setPostData(post);
     }, [post])
 
-    const dispatch = useDispatch();
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!authdata) {
+            toast.error("Cannot create post");
+        }
         if (updateId) {
             dispatch(updatePost(updateId, postData));
             clear();
         } else {
-            dispatch(createPost(postData));
+            dispatch(createPost(postData,history));
             clear();
         }
     }
@@ -49,12 +54,10 @@ export default function Form({ updateId, setupdateId }) {
     };
 
     return (
-        <Paper className={classes.paper}>
+        <Paper elevation={6} className={classes.paper}>
             <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
 
                 <Typography variant="h6">{updateId ? `Editing "${post.title}"` : 'Creating a Memory'}</Typography>
-
-                <TextField name="creator" variant="outlined" label="Creator" fullWidth value={postData.creator} onChange={changeInput} />
                 <TextField name="title" variant="outlined" label="Title" fullWidth value={postData.title} onChange={changeInput} />
                 <TextField name="message" variant="outlined" label="Message" fullWidth multiline rows={4} value={postData.message} onChange={changeInput} />
 

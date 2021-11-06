@@ -1,14 +1,17 @@
-const { getPost, createPost, updatePost, deletePost, likePost } = require('../controller/postController');
+const { getPost, createPost, updatePost, deletePost, likePost,getPostSearch,getSinglePost } = require('../controller/postController');
+const tokenValidate = require('../middleware/validateTOken');
 
 const router = require('express').Router();
 
 
 
 router.get('/', getPost)
-router.post('/', createPost)
-router.patch('/:id', updatePost)
-router.delete('/:id', deletePost)
-router.patch('/:id/like', likePost)
+router.get('/search', getPostSearch);
+router.get('/:id', getSinglePost);
+router.post('/', tokenValidate, createPost)
+router.patch('/:id', tokenValidate, updatePost)
+router.delete('/:id', tokenValidate, deletePost)
+router.patch('/:id/like', tokenValidate, likePost)
 
 
 

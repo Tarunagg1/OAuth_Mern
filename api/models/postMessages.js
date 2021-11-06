@@ -8,10 +8,15 @@ const postSchema = mongoose.Schema({
     creator:String,
     tags:[String],
     selectedFile:String,
+    likes:{
+        type:[],
+        default:[]
+    },
     likecount:{
         type:Number,
         default:0
-    }
+    },
+    creatorid:String
 },{timeStamps:true});
 
 const postModel = mongoose.model('postMessage',postSchema);

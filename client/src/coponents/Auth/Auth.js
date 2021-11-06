@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Container, Grid, Paper, Typography, Avatar, Button } from '@material-ui/core';
 import useStyle from './style';
 import { LockOutlinedIcon } from '@material-ui/icons';
@@ -7,9 +7,10 @@ import Inputfield from './Inputfield';
 import { GoogleLogin } from 'react-google-login';
 import { toast } from 'react-toastify';
 import { CLIENT_ID } from '../../config/Env';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AUTH } from '../../constant';
 import { useHistory } from 'react-router';
+import { loginUser, registerUser } from '../../action/auth.action';
 
 export default function Auth() {
     const classes = useStyle();
@@ -17,13 +18,37 @@ export default function Auth() {
     const [isSignUp, setisSignUp] = useState(false);
     const dispatch = useDispatch();
     const history = useHistory();
+    const { authdata } = useSelector(state => state.auth);
 
-    const handelSubmit = () => {
+    const [formData, setformData] = useState({
+        name:"",
+        lastname:"",
+        password:"",
+        email:"",
+        repeatpass:""
+    })
+    
 
+    const handelSubmit = (e) => {
+        e.preventDefault();
+        
+        if(isSignUp){
+            // register
+            dispatch(registerUser({formData,history}));
+        }else{
+            // login
+            dispatch(loginUser({formData,history}));
+        }
     }
 
-    const handelChange = (e) => {
+    useEffect(() => {
+        if(authdata){
+            history.push('/');
+        }
+    }, [authdata])
 
+    const handelChange = (e) => {
+        setformData({...formData,[e.target.name]:e.target.value})
     }
 
     const handelShowPassword = () => {
@@ -47,7 +72,7 @@ export default function Auth() {
 
     const switchMode = () => {
         setisSignUp((isSignUp) => !isSignUp);
-        handelSubmit(false);
+        // handelSubmit(false);
     }
 
     return (
@@ -63,7 +88,7 @@ export default function Auth() {
                         {
                             isSignUp && (
                                 <Fragment>
-                                    <Inputfield type="text" name="firstname" label="Enter firstname" half={true} onChange={handelChange} autoFocus="autoFocus" />
+                                    <Inputfield type="text" name="name" label="Enter firstname" half={true} onChange={handelChange} autoFocus="autoFocus" />
                                     <Inputfield type="text" name="lastname" label="Enter lastname" half={true} onChange={handelChange} autoFocus="autoFocus" />
                                 </Fragment>
                             )
@@ -95,6 +120,7 @@ export default function Auth() {
                         onFailure={googleFailure}
                         cookiePolicy="single_host_origin"
                     />
+                    
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Button onClick={switchMode} >

@@ -1,33 +1,33 @@
-import { AUTH, LOG_OUT } from "../constant";
+import { getProfileFromLocalStorage, removeProfileFromLocalStorage, setProfileFromLocalStorage } from "../config/common";
+import { AUTH, LOG_OUT, NORMAL_AUTH } from "../constant";
 
 const initialState = {
     authdata: null
 };
 
-const setProfileFromLocalStorage = (data) => {
-    localStorage.setItem("profile", JSON.stringify(data));
-}
-const removeProfileFromLocalStorage = () => {
-    localStorage.removeItem("profile");
-}
-const getProfileFromLocalStorage = (token) => {
-    return JSON.parse(localStorage.getItem("profile"));
-}
 
+let profile = getProfileFromLocalStorage();
+
+if(profile){
+    initialState.authdata = profile;
+}
 
 export default (state = initialState, action) => {
     const { payload, type } = action;
     switch (type) {
         case AUTH:
-            console.log(payload);
-            setProfileFromLocalStorage(payload?.result);
-            return { ...state, authdata:{...payload?.result,token:payload?.result.token} };
+            let ret = { ...payload?.result, token: payload?.token }
+            setProfileFromLocalStorage(ret);
+            return { ...state, authdata: ret };
         case LOG_OUT:
             removeProfileFromLocalStorage();
             return { ...state, authdata: null };
+        case NORMAL_AUTH:
+            removeProfileFromLocalStorage();
+            return { ...state, authdata: profile ? profile : null};
+
         default:
             return state;
     }
 }
 
-export { getProfileFromLocalStorage }

@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import useStyles from './style';
-import { Link,useHistory,useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfileFromLocalStorage } from '../../reducers/auth.reducer';
 import { LOG_OUT } from '../../constant';
 
 export default function Navbar() {
-    const {authdata} = useSelector(state => state.auth);
+    const { authdata } = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const location = useLocation();
 
-    const [user, setuser] = useState(getProfileFromLocalStorage());
 
-    useEffect(() => {
-        setuser(getProfileFromLocalStorage())
-    }, [location])
 
-    const logOut = ()=>{
-        dispatch({type:LOG_OUT}) 
+    const logOut = () => {
+        dispatch({ type: LOG_OUT })
         history.push('/auth');
-        setuser(null);
-    }   
+    }
 
     const classes = useStyles();
 
@@ -36,10 +29,10 @@ export default function Navbar() {
                 </div>
                 <Toolbar>
                     {
-                        user? (
+                        authdata ? (
                             <div className={classes.profile}>
-                                <Avatar className={classes.purple} alt={user?.name} src={user?.imageUrl}> {user?.name.charAt(0)} </Avatar>
-                                <Typography className={classes.userName} variant="h6">{user?.name}</Typography>
+                                <Avatar className={classes.purple} alt={authdata?.name} src={authdata?.imageUrl}> {authdata && authdata?.name?.charAt(0)} </Avatar>
+                                <Typography className={classes.userName} variant="h6">{authdata && authdata?.name}</Typography>
                                 <Button variant="contained" color="secondary" className={classes.logout} onClick={logOut}>Logout</Button>
                             </div>
                         ) : (
