@@ -41,6 +41,8 @@ export const fetchPost = (id) => axiosinstance.get(`/posts/${id}`);
 export const fetchPostsBySearch = (searchQuery) => axiosinstance.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 
 export const createPostApi = (data) => axiosinstance.post(`/posts`, data);
+export const createComment = (data,postid) => axiosinstance.post(`/posts/${postid}/comment`,{value: data});
+
 export const updatePostApi = (id, data) => axiosinstance.patch(`/posts/${id}`, data);
 export const deletePostApi = (id) => axiosinstance.delete(`/posts/${id}`);
 

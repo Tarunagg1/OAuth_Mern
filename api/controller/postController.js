@@ -66,7 +66,6 @@ const createPost = async (req, res) => {
     }
 }
 
-
 const updatePost = async (req, res) => {
     const { id } = req.params;
     try {
@@ -113,6 +112,19 @@ const likePost = async (req, res) => {
     }
 }
 
+const createComment = async (req, res) => {
+    const {value} = req.body;
+    const { id } = req.params;
+    try {
+        const post = await postMessageModel.findById(id);
+        post.comments.push(value);
+        const updatePost = await postMessageModel.findByIdAndUpdate(id, post, { new: true });
+        return res.status(200).json(updatePost);
+    } catch (error) {
+        return res.status(400).json({ updatePost});
+    }
+}
+
 
 module.exports = {
     getPost,
@@ -121,5 +133,6 @@ module.exports = {
     deletePost,
     likePost,
     getPostSearch,
-    getSinglePost
+    getSinglePost,
+    createComment
 }

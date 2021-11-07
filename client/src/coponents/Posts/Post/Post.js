@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardActions, CardContent, CardMedia, Button, Typography,ButtonBase } from '@material-ui/core/';
+import React, { useState } from 'react';
+import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core/';
 
 import ThumbUpAlt from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
@@ -18,6 +18,7 @@ export default function Post({ post, setupdateId }) {
     const classes = useStyles();
     const { authdata } = useSelector(state => state.auth);
     const history = useHistory();
+    const [likes, setlikes] = useState(post?.likes);
 
     const deletePostInside = (id) => {
         dispatch(deletePost(id));
@@ -43,23 +44,23 @@ export default function Post({ post, setupdateId }) {
         return <><ThumbUpAltOutlined fontSize="small" /> &nbsp; Like</>
     }
 
-    const openPosts = (id)=>{
+    const openPosts = (id) => {
         history.push(`/posts/${id}`);
     }
 
     return (
         <Card className={classes.card}>
-            <CardMedia  style={{cursor:'pointer'}} onClick={() => openPosts(post._id)}  className={classes.media} image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} title={post.title} />
+            <CardMedia style={{ cursor: 'pointer' }} onClick={() => openPosts(post._id)} className={classes.media} image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} title={post.title} />
             <div className={classes.overlay}>
                 <Typography variant="h6">{post.creator}</Typography>
                 <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
             </div>
             <div className={classes.overlay2}>
-            {
-                (authdata?.googleId === post.creatorid || authdata?._id === post.creatorid) && (
-                    <Button onClick={() => editPostInside(post._id)} style={{ color: 'white' }} size="small"><MoreHorizIcon fontSize="default" /></Button>
-                )
-            }
+                {
+                    (authdata?.googleId === post.creatorid || authdata?._id === post.creatorid) && (
+                        <Button onClick={() => editPostInside(post._id)} style={{ color: 'white' }} size="small"><MoreHorizIcon fontSize="default" /></Button>
+                    )
+                }
             </div>
             <div className={classes.details}>
                 <Typography variant="body2" color="textSecondary" component="h2">{post.tags.map((tag) => `#${tag} `)}</Typography>
@@ -72,7 +73,7 @@ export default function Post({ post, setupdateId }) {
                 <Button size="small" color="primary" disabled={!authdata} onClick={() => likePostInside(post._id)} >{likesTemplate()}</Button>
                 {(authdata?.googleId === post?.creatorid || authdata?._id === post?.creatorid) && (
                     <Button size="small" onClick={() => deletePostInside(post._id)} color="primary"><DeleteIcon fontSize="small" /> Delete</Button>
-                ) }
+                )}
             </CardActions>
         </Card>
     )

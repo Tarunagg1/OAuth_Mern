@@ -1,5 +1,7 @@
 import * as api from '../api';
-import { CREATE_POST, DELETE_POST, FETCH_ALL_POST, FETCH_SINGLE_POST, SEARCH_POST, START_POST_LOADING, STOP_POST_LOADING, UPDATE_POST } from '../constant';
+import { CREATE_COMMENT, CREATE_POST, DELETE_POST, FETCH_ALL_POST, 
+    FETCH_SINGLE_POST,SEARCH_POST, START_POST_LOADING, 
+    STOP_POST_LOADING, UPDATE_POST } from '../constant';
 
 
 export const getPost = () => {
@@ -56,6 +58,20 @@ export const createPost = (postData, history) => {
         }
     }
 }
+
+
+export const commentPost = (value,postid) => {
+    return async (dispatch) => {
+        try {
+            const { data } = await api.createComment(value,postid);
+            dispatch({ type:CREATE_COMMENT,payload: data})
+            return data;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+}
+
 
 export const deletePost = (id) => {
     return async (dispatch) => {

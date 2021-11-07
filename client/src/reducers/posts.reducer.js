@@ -1,4 +1,4 @@
-import { CREATE_POST, DELETE_POST, FETCH_ALL_POST, FETCH_SINGLE_POST, SEARCH_POST, SET_LIKE, START_POST_LOADING, STOP_POST_LOADING, UPDATE_POST } from "../constant";
+import { CREATE_COMMENT, CREATE_POST, DELETE_POST, FETCH_ALL_POST, FETCH_SINGLE_POST, SEARCH_POST, SET_LIKE, START_POST_LOADING, STOP_POST_LOADING, UPDATE_POST } from "../constant";
 
 const initialState = {
     posts: [],
@@ -22,6 +22,11 @@ export default (state = initialState, action) => {
             const getPost = [...state.posts];
             getPost.push(payload);
             return { ...state, posts: getPost }
+        case CREATE_COMMENT:
+            const newCommentPost = state.posts.map((p) => {
+                if (p._id === payload._id) return payload
+            })
+            return { ...state, posts: newCommentPost }
         case DELETE_POST:
             let getPosts = state.posts.filter(post => post._id !== payload);
             return { ...state, posts: getPosts }
